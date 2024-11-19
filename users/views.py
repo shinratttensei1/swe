@@ -56,37 +56,6 @@ def register_buyer(request):
     return render(request, 'users/register_buyer.html', {'form': form})
 
 
-def register_farmer(request):
-    if request.method == 'POST':
-        form = FarmerRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.role = 'farmer'  # Assign the farmer role
-            user.is_approved = False  # Admin approval required
-            user.password = make_password(form.cleaned_data['password'])  # Hash password
-            user.save()
-            messages.success(request, 'Registration successful! Pending admin approval.')
-            return redirect('login')  # Redirect to login page
-    else:
-        form = FarmerRegistrationForm()
-    return render(request, 'users/register_farmer.html', {'form': form})
-
-
-def register_buyer(request):
-    if request.method == 'POST':
-        form = BuyerRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.role = 'buyer'  # Assign the buyer role
-            user.is_approved = True  # Buyers don’t need approval
-            user.password = make_password(form.cleaned_data['password'])  # Hash password
-            user.save()
-            messages.success(request, 'Registration successful! You can now log in.')
-            return redirect('login')  # Redirect to login page
-    else:
-        form = BuyerRegistrationForm()
-    return render(request, 'users/register_buyer.html', {'form': form})
-
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
 
