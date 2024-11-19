@@ -1,1 +1,65 @@
-<h1>Welcome to Admin Dashboard</h1>
+<h1>Admin Dashboard</h1>
+
+<h2>Pending Farmer Approvals</h2>
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Action</th>
+    </tr>
+    {% for farmer in pending_farmers %}
+    <tr>
+        <td>{{ farmer.username }}</td>
+        <td>{{ farmer.email }}</td>
+        <td>
+            <form method="post" action="{% url 'approve_farmer' farmer.id %}">
+                {% csrf_token %}
+                <button type="submit">Approve</button>
+            </form>
+            <form method="post" action="{% url 'reject_farmer' farmer.id %}">
+                {% csrf_token %}
+                <button type="submit">Reject</button>
+            </form>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="3">No pending approvals</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>All Users</h2>
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    {% for user in all_users %}
+    <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ "Active" if user.is_active else "Disabled" }}</td>
+        <td>
+            <form method="post" action="{% url 'toggle_user_status' user.id %}">
+                {% csrf_token %}
+                <button type="submit">
+                    {{ "Disable" if user.is_active else "Enable" }}
+                </button>
+            </form>
+            <form method="post" action="{% url 'delete_user' user.id %}">
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No users found</td>
+    </tr>
+    {% endfor %}
+</table>

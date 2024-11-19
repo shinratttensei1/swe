@@ -12,9 +12,14 @@ urlpatterns += [
     path('login/', user_login, name='login'),
 ]
 
-
 urlpatterns += [
     path('admin/dashboard/', admin_dashboard, name='admin_dashboard'),
     path('farmer/dashboard/', farmer_dashboard, name='farmer_dashboard'),
     path('buyer/dashboard/', buyer_dashboard, name='buyer_dashboard'),
 ]
+
+urlpatterns += [
+    path('admin/dashboard/', admin_dashboard, name='admin_dashboard'),
+]
+
+

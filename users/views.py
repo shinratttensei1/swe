@@ -3,6 +3,27 @@ from django.contrib import messages
 from .forms import FarmerRegistrationForm, BuyerRegistrationForm, LoginForm
 from django.contrib.auth.hashers import make_password
 
+from django.contrib.auth.decorators import login_required
+from .models import CustomUser
+from django.shortcuts import get_object_or_404
+
+@login_required
+def admin_dashboard(request):
+    if request.user.role != 'admin':  # Ensure only admins can access
+        return HttpResponseForbidden('You are not authorized to view this page.')
+
+    # Fetch data for the dashboard
+    pending_farmers = CustomUser.objects.filter(role='farmer', is_approved=False)
+    all_users = CustomUser.objects.exclude(role='admin')  # Exclude admin accounts
+    return render(request, 'users/admin_dashboard.html', {
+        'pending_farmers': pending_farmers,
+        'all_users': all_users,
+    })
+
+from django.contrib import messages
+from django.shortcuts import redirect
+
+
 
 def register_farmer(request):
     if request.method == 'POST':
@@ -91,6 +112,21 @@ def user_login(request):
     return render(request, 'users/login.html', {'form': form})
 
 
+
+@login_required
+def admin_dashboard(request):
+    if request.user.role != 'admin':  # Ensure only admins can access
+        return HttpResponseForbidden('You are not authorized to view this page.')
+
+    # Fetch data for the admin dashboard
+    pending_farmers = CustomUser.objects.filter(role='farmer', is_approved=False)
+    all_users = CustomUser.objects.exclude(role='admin')  # Exclude admin accounts
+    return render(request, 'users/admin_dashboard.html', {
+        'pending_farmers': pending_farmers,
+        'all_users': all_users,
+    })
+
+
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -107,10 +143,10 @@ def buyer_dashboard(request):
 
 from .decorators import role_required
 
-@login_required
+'''@login_required
 @role_required('admin')
 def admin_dashboard(request):
-    return render(request, 'users/admin_dashboard.html')
+    return render(request, 'users/admin_dashboard.html')'''
 
 @login_required
 @role_required('farmer')
